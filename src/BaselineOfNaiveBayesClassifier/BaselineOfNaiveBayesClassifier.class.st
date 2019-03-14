@@ -11,6 +11,6 @@ BaselineOfNaiveBayesClassifier >> baseline: spec [
 		"Packages"
 		spec
 			package: 'NaiveBayesClassifier';
-			package: 'NaiveBayesClassifier' with: [ spec requires: #('NaiveBayesClassifier') ].
+			package: 'NaiveBayesClassifier-Tests' with: [ spec requires: #('NaiveBayesClassifier') ].
 	]
 ]
