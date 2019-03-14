@@ -1,4 +1,4 @@
-# Multinomial Naive Bayes Classifier
+# Naive Bayes Classifier
 
 [![Build Status](https://travis-ci.org/olekscode/NaiveBayesClassifier.svg?branch=master)](https://travis-ci.org/olekscode/NaiveBayesClassifier)
 [![Build status](https://ci.appveyor.com/api/projects/status/1wdnjvmlxfbml8qo?svg=true)](https://ci.appveyor.com/project/olekscode/naivebayesclassifier)
