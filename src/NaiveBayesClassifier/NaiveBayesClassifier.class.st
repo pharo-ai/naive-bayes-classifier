@@ -5,62 +5,176 @@ Class {
 	#name : #NaiveBayesClassifier,
 	#superclass : #Object,
 	#instVars : [
+		'vocabulary',
+		'labels',
 		'priors',
-		'likelihoods',
-		'labels'
+		'likelihoods'
 	],
 	#category : #NaiveBayesClassifier
 }
 
-{ #category : #'as yet unclassified' }
-NaiveBayesClassifier >> learnFromFeatures: anArrayOfFeatureVectors withLabels: anArrayOfLabels [
+{ #category : #learning }
+NaiveBayesClassifier >> extractVocabularyFrom: anArrayOfDocuments [
+	^ anArrayOfDocuments flatCollectAsSet: #value.
+]
+
+{ #category : #learning }
+NaiveBayesClassifier >> frequencyOfLabels: anArrayOfLabels [
+	^ anArrayOfLabels asBag valuesAndCounts / anArrayOfLabels size.
+]
+
+{ #category : #accessing }
+NaiveBayesClassifier >> labels [
+	^ labels
+]
+
+{ #category : #accessing }
+NaiveBayesClassifier >> labels: anObject [
+	labels := anObject
+]
+
+{ #category : #learning }
+NaiveBayesClassifier >> learnFromDocuments: anArrayOfDocuments withLabels: anArrayOfLabels [
+	vocabulary := self extractVocabularyFrom: anArrayOfDocuments.
 	labels := anArrayOfLabels asSet asArray.
+	
 	self learnLabelPriors: anArrayOfLabels.
-	self learnLikelihoodsFromFeatures: anArrayOfFeatureVectors withLabels: anArrayOfLabels.
+	self learnLikelihoodsFrom: anArrayOfDocuments withLabels: anArrayOfLabels.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #learning }
 NaiveBayesClassifier >> learnLabelPriors: anArrayOfLabels [
-	priors := anArrayOfLabels asBag valuesAndCounts.
+	priors := self frequencyOfLabels: anArrayOfLabels.
 ]
 
-{ #category : #'as yet unclassified' }
-NaiveBayesClassifier >> learnLikelihoodsFromFeatures: anArrayOfFeatureVectors withLabels: anArrayOfLabels [
-	likelihoods := (labels collect: [ :label |
-		label -> ((anArrayOfFeatureVectors withIndexSelect: [ :vector :index |
-			(anArrayOfLabels at: index) = label ]) sum / anArrayOfLabels size) ]) asDictionary.
+{ #category : #learning }
+NaiveBayesClassifier >> learnLikelihoodsFrom: anArrayOfDocuments withLabels: anArrayOfLabels [
+	likelihoods := self likelihoodByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels
 ]
 
-{ #category : #'as yet unclassified' }
-NaiveBayesClassifier >> likelihoodOfFeature: aFeatureIndex given: aLabel [
-	"Conditional probability of the document being represented with a feature vectore that contains a feature given that this document is labeled with aLabel"
-	^ (likelihoods at: aLabel) at: aFeatureIndex
+{ #category : #learning }
+NaiveBayesClassifier >> likelihoodByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels [
+	| wordCountsByLabelAndWord wordCountsByLabel result |
+	
+	wordCountsByLabelAndWord := self
+		wordCountByLabelAndWordIn: anArrayOfDocuments
+		withLabels: anArrayOfLabels.
+		
+	wordCountsByLabel := self
+		wordCountByLabelIn: anArrayOfDocuments
+		withLabels: anArrayOfLabels.
+		
+	result := Dictionary new.
+		
+	labels do: [ :label |
+		result at: label put: Dictionary new.
+		
+		vocabulary do: [ :word |
+			(result at: label) at: word put: (
+				((wordCountsByLabelAndWord at: label) at: word) + 1 / ((wordCountsByLabel at: label) + vocabulary size)) ] ].
+		
+	^ result 
 ]
 
-{ #category : #'as yet unclassified' }
-NaiveBayesClassifier >> likelihoodOfFeatureVector: aFeatureVector given: aLabel [
-	"Conditional probability of the document being represented with aFeatureVectore given that this document is labeled with aLabel"
-	^ (1 to: aFeatureVector size) inject: 1 into: [ :prod :i |
-		prod * (self likelihoodOfFeature: i given: aLabel) ].
+{ #category : #predicting }
+NaiveBayesClassifier >> likelihoodOfDocument: aDocument givenLabel: aLabel [
+	"Conditional probability of aDocument (treated as a bag of words) given that this document is labeled with aLabel. This probability is based on the Naive Bayes assumption"
+	^ aDocument inject: 1 into: [ :prod :word |
+		prod * (self likelihoodOfWord: word givenLabel: aLabel) ].
 ]
 
-{ #category : #'as yet unclassified' }
-NaiveBayesClassifier >> likelihoodOfLabel: aLabel given: aFeatureVector [
-	^ (self priorOfLabel: aLabel) * (self likelihoodOfFeatureVector: aFeatureVector given: aLabel)
+{ #category : #predicting }
+NaiveBayesClassifier >> likelihoodOfLabel: aLabel givenDocument: aDocument [
+	^ (self priorOfLabel: aLabel) * (self likelihoodOfDocument: aDocument givenLabel: aLabel)
 ]
 
-{ #category : #'as yet unclassified' }
-NaiveBayesClassifier >> predictLabelFor: aFeatureVector [
+{ #category : #predicting }
+NaiveBayesClassifier >> likelihoodOfWord: aWord givenLabel: aLabel [
+	"Conditional probability that aWord appears in the document given that this document is labeled with aLabel"
+	^ (likelihoods at: aLabel) at: aWord
+]
+
+{ #category : #accessing }
+NaiveBayesClassifier >> likelihoods [
+	^ likelihoods
+]
+
+{ #category : #accessing }
+NaiveBayesClassifier >> likelihoods: anObject [
+	likelihoods := anObject
+]
+
+{ #category : #predicting }
+NaiveBayesClassifier >> predictLabelFor: aDocument [
+	"Assigns label to aDocument which has the maximum likelihood given that document"
 	| labelLikelihoods |
 	
 	labelLikelihoods := (labels collect: [ :each |
-		each -> (self likelihoodOfLabel: each given: aFeatureVector) ]) asDictionary.
+		each -> (self likelihoodOfLabel: each givenDocument: aDocument) ]) asDictionary.
 	
 	^ labelLikelihoods keyAtValue: labelLikelihoods max.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #predicting }
 NaiveBayesClassifier >> priorOfLabel: aLabel [
 	"Prior probability of a label"
 	^ priors at: aLabel
+]
+
+{ #category : #accessing }
+NaiveBayesClassifier >> priors [
+	^ priors
+]
+
+{ #category : #accessing }
+NaiveBayesClassifier >> priors: anObject [
+	priors := anObject
+]
+
+{ #category : #accessing }
+NaiveBayesClassifier >> vocabulary [
+	^ vocabulary
+]
+
+{ #category : #accessing }
+NaiveBayesClassifier >> vocabulary: anObject [
+	vocabulary := anObject
+]
+
+{ #category : #learning }
+NaiveBayesClassifier >> wordCountByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels [
+	| zeroCounts selectedIndices selectedDocuments result |
+	
+	zeroCounts := (vocabulary collect: [ :each | each -> 0 ]) asDictionary.
+	result := Dictionary new.
+	
+	labels do: [ :label |
+		selectedIndices := (1 to: anArrayOfLabels size)
+			select: [ :i | (anArrayOfLabels at: i) = label ].
+			
+		selectedDocuments := selectedIndices
+			collect: [ :i | anArrayOfDocuments at: i ].
+			
+		result at: label put: (
+			zeroCounts union: (selectedDocuments flatCollect: #value) asBag valuesAndCounts) ].
+		
+		^ result
+]
+
+{ #category : #learning }
+NaiveBayesClassifier >> wordCountByLabelIn: anArrayOfDocuments withLabels: anArrayOfLabels [
+	| selectedIndices selectedDocuments result |
+	result := Dictionary new.
+	
+	labels do: [ :label |
+		selectedIndices := (1 to: anArrayOfLabels size)
+			select: [ :i | (anArrayOfLabels at: i) = label ].
+			
+		selectedDocuments := selectedIndices
+			collect: [ :i | anArrayOfDocuments at: i ].
+			
+		result at: label put: (selectedDocuments
+			inject: 0 into: [ :sum :eachDocument | sum + eachDocument size ]) ].
+		
+		^ result
 ]
