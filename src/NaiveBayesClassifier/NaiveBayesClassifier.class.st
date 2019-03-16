@@ -130,10 +130,12 @@ NaiveBayesClassifier >> likelihoods: anObject [
 { #category : #predicting }
 NaiveBayesClassifier >> predictLabelFor: aDocument [
 	"Assigns label to aDocument which has the maximum likelihood given that document"
-	| labelLikelihoods |
+	| document labelLikelihoods |
+	
+	document := self removeOutOfVocabularyWords: aDocument.
 	
 	labelLikelihoods := (labels collect: [ :each |
-		each -> (self likelihoodOfLabel: each givenDocument: aDocument) ]) asDictionary.
+		each -> (self likelihoodOfLabel: each givenDocument: document) ]) asDictionary.
 	
 	^ labelLikelihoods keyAtValue: labelLikelihoods max.
 ]
@@ -152,6 +154,11 @@ NaiveBayesClassifier >> priors [
 { #category : #accessing }
 NaiveBayesClassifier >> priors: anObject [
 	priors := anObject
+]
+
+{ #category : #predicting }
+NaiveBayesClassifier >> removeOutOfVocabularyWords: aDocument [
+	^ aDocument select: [ :word | self vocabulary includes: word ]
 ]
 
 { #category : #accessing }
