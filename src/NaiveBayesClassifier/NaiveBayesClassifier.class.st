@@ -14,13 +14,38 @@ Class {
 }
 
 { #category : #learning }
+NaiveBayesClassifier >> documentCountByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels [
+	| zeroCounts selectedIndices selectedDocuments result |
+	
+	zeroCounts := (vocabulary collect: [ :each | each -> 0 ]) asDictionary.
+	result := Dictionary new.
+	
+	labels do: [ :label |
+		selectedIndices := (1 to: anArrayOfLabels size)
+			select: [ :i | (anArrayOfLabels at: i) = label ].
+			
+		selectedDocuments := selectedIndices
+			collect: [ :i | anArrayOfDocuments at: i ].
+			
+		result at: label put: (
+			zeroCounts union: (selectedDocuments flatCollect: #asSet) asBag valuesAndCounts) ].
+		
+		^ result
+]
+
+{ #category : #learning }
 NaiveBayesClassifier >> extractVocabularyFrom: anArrayOfDocuments [
 	^ anArrayOfDocuments flatCollectAsSet: #value.
 ]
 
 { #category : #learning }
 NaiveBayesClassifier >> frequencyOfLabels: anArrayOfLabels [
-	^ anArrayOfLabels asBag valuesAndCounts / anArrayOfLabels size.
+	^ (self labelCount: anArrayOfLabels) / anArrayOfLabels size.
+]
+
+{ #category : #learning }
+NaiveBayesClassifier >> labelCount: anArrayOfLabels [
+	^ anArrayOfLabels asBag valuesAndCounts
 ]
 
 { #category : #accessing }
@@ -54,15 +79,13 @@ NaiveBayesClassifier >> learnLikelihoodsFrom: anArrayOfDocuments withLabels: anA
 
 { #category : #learning }
 NaiveBayesClassifier >> likelihoodByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels [
-	| wordCountsByLabelAndWord wordCountsByLabel result |
+	| documentCountsByLabelAndWord labelCounts result |
 	
-	wordCountsByLabelAndWord := self
-		wordCountByLabelAndWordIn: anArrayOfDocuments
+	documentCountsByLabelAndWord := self
+		documentCountByLabelAndWordIn: anArrayOfDocuments
 		withLabels: anArrayOfLabels.
 		
-	wordCountsByLabel := self
-		wordCountByLabelIn: anArrayOfDocuments
-		withLabels: anArrayOfLabels.
+	labelCounts := self labelCount: anArrayOfLabels.
 		
 	result := Dictionary new.
 		
@@ -71,7 +94,7 @@ NaiveBayesClassifier >> likelihoodByLabelAndWordIn: anArrayOfDocuments withLabel
 		
 		vocabulary do: [ :word |
 			(result at: label) at: word put: (
-				((wordCountsByLabelAndWord at: label) at: word) + 1 / ((wordCountsByLabel at: label) + vocabulary size)) ] ].
+				((documentCountsByLabelAndWord at: label) at: word) / (labelCounts at: label)) ] ].
 		
 	^ result 
 ]
@@ -139,42 +162,4 @@ NaiveBayesClassifier >> vocabulary [
 { #category : #accessing }
 NaiveBayesClassifier >> vocabulary: anObject [
 	vocabulary := anObject
-]
-
-{ #category : #learning }
-NaiveBayesClassifier >> wordCountByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels [
-	| zeroCounts selectedIndices selectedDocuments result |
-	
-	zeroCounts := (vocabulary collect: [ :each | each -> 0 ]) asDictionary.
-	result := Dictionary new.
-	
-	labels do: [ :label |
-		selectedIndices := (1 to: anArrayOfLabels size)
-			select: [ :i | (anArrayOfLabels at: i) = label ].
-			
-		selectedDocuments := selectedIndices
-			collect: [ :i | anArrayOfDocuments at: i ].
-			
-		result at: label put: (
-			zeroCounts union: (selectedDocuments flatCollect: #value) asBag valuesAndCounts) ].
-		
-		^ result
-]
-
-{ #category : #learning }
-NaiveBayesClassifier >> wordCountByLabelIn: anArrayOfDocuments withLabels: anArrayOfLabels [
-	| selectedIndices selectedDocuments result |
-	result := Dictionary new.
-	
-	labels do: [ :label |
-		selectedIndices := (1 to: anArrayOfLabels size)
-			select: [ :i | (anArrayOfLabels at: i) = label ].
-			
-		selectedDocuments := selectedIndices
-			collect: [ :i | anArrayOfDocuments at: i ].
-			
-		result at: label put: (selectedDocuments
-			inject: 0 into: [ :sum :eachDocument | sum + eachDocument size ]) ].
-		
-		^ result
 ]

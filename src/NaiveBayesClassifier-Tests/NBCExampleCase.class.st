@@ -24,6 +24,11 @@ NBCExampleCase >> arrayOfLabels [
 	self subclassResponsibility
 ]
 
+{ #category : #'as yet unclassified' }
+NBCExampleCase >> documentCountsByLabelAndWord [
+	self subclassResponsibility
+]
+
 { #category : #accessing }
 NBCExampleCase >> documentLikelihoods [
 	self subclassResponsibility
@@ -34,6 +39,16 @@ NBCExampleCase >> documentPriors [
 	self subclassResponsibility
 ]
 
+{ #category : #'as yet unclassified' }
+NBCExampleCase >> labelCounts [
+	self subclassResponsibility
+]
+
+{ #category : #'as yet unclassified' }
+NBCExampleCase >> labelLikelihoods [
+	self subclassResponsibility
+]
+
 { #category : #accessing }
 NBCExampleCase >> labelPriors [
 	self subclassResponsibility
@@ -41,6 +56,11 @@ NBCExampleCase >> labelPriors [
 
 { #category : #accessing }
 NBCExampleCase >> labels [
+	self subclassResponsibility
+]
+
+{ #category : #'as yet unclassified' }
+NBCExampleCase >> predictedLabels [
 	self subclassResponsibility
 ]
 
