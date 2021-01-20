@@ -14,6 +14,6 @@ This is a simple implementation of a multinomial Naive Bayes classifier in Pharo
 ```Smalltalk
 Metacello new
   baseline: 'NaiveBayesClassifier';
-  repository: 'github://olekscode/NaiveBayesClassifier/src';
+  repository: 'github://pharo-ai/NaiveBayesClassifier/src';
   load.
 ```
