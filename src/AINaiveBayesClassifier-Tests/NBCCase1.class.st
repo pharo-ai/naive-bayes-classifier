@@ -4,6 +4,18 @@ Class {
 	#category : #'AINaiveBayesClassifier-Tests'
 }
 
+{ #category : #accessing }
+NBCCase1 >> arrayOfDocuments [
+	^ #((I am Sam)
+		(Sam I am)
+		(I do not like green eggs and ham)).
+]
+
+{ #category : #accessing }
+NBCCase1 >> arrayOfLabels [
+	^ #(spam spam ham)
+]
+
 { #category : #'as yet unclassified' }
 NBCCase1 >> documentCountsByLabelAndWord [
 	^ {
@@ -15,6 +27,14 @@ NBCCase1 >> documentCountsByLabelAndWord [
 			'I' -> 1 . 'am' -> 0 . 'Sam' -> 0 . 'do' -> 1 .
 			'not' -> 1 . 'like' -> 1 . 'green' -> 1 . 'eggs' -> 1 .
 			'and' -> 1 . 'ham' -> 1 } asDictionary
+	} asDictionary
+]
+
+{ #category : #accessing }
+NBCCase1 >> documentLikelihoods [
+	^ { 
+		'spam' -> { 1 . 1 . 0 } .
+		'ham' -> { 0 . 0 . 1 }
 	} asDictionary
 ]
 
@@ -35,7 +55,36 @@ NBCCase1 >> labelLikelihoods [
 		{ 'spam' -> 0 . 'ham' -> 1 } asDictionary }
 ]
 
+{ #category : #accessing }
+NBCCase1 >> labelPriors [
+	^ { 'spam' -> (2/3) . 'ham' -> (1/3) } asDictionary
+]
+
+{ #category : #accessing }
+NBCCase1 >> labels [
+	^ #(spam ham) asSet
+]
+
 { #category : #'as yet unclassified' }
 NBCCase1 >> predictedLabels [ 
 	^ #(spam spam ham)
+]
+
+{ #category : #accessing }
+NBCCase1 >> vocabulary [
+	^ #(I am Sam do not like green eggs and ham) asSet
+]
+
+{ #category : #accessing }
+NBCCase1 >> wordLikelihoods [
+	^ {
+		'spam' -> {
+			'I' -> 1 . 'am' -> 1 . 'Sam' -> 1 . 'do' -> 0 .
+			'not' -> 0 . 'like' -> 0 . 'green' -> 0 . 'eggs' -> 0 .
+			'and' -> 0 . 'ham' -> 0 } asDictionary .
+		'ham' -> {
+			'I' -> 1 . 'am' -> 0 . 'Sam' -> 0 . 'do' -> 1 .
+			'not' -> 1 . 'like' -> 1 . 'green' -> 1 . 'eggs' -> 1 .
+			'and' -> 1 . 'ham' -> 1 } asDictionary
+	} asDictionary
 ]

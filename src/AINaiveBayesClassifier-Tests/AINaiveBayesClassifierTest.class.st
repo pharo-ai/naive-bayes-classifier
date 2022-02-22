@@ -8,6 +8,16 @@ Class {
 	#category : #'AINaiveBayesClassifier-Tests'
 }
 
+{ #category : #running }
+AINaiveBayesClassifierTest >> setUp [
+	super setUp.
+	exampleCase := NBCCase2 new.
+	
+	classifier := AINaiveBayesClassifier new.
+	classifier vocabulary: exampleCase vocabulary.
+	classifier labels: exampleCase labels.
+]
+
 { #category : #tests }
 AINaiveBayesClassifierTest >> testDocumentCountByLabelAndWordInWithLabels [
 	| expected actual |
