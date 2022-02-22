@@ -1,14 +1,14 @@
 SmalltalkCISpec {
   #loading : [
     SCIMetacelloLoadSpec {
-      #baseline : 'NaiveBayesClassifier',
+      #baseline : 'AINaiveBayesClassifier',
       #directory : 'src',
       #platforms : [ #pharo ]
     }
   ],
   #testing : {
     #coverage : {
-      #packages : [ 'NaiveBayesClassifier*' ]
+      #packages : [ 'AINaiveBayesClassifier*' ]
     }
   }
 }
