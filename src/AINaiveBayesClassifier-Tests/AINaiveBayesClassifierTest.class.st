@@ -1,25 +1,15 @@
 Class {
-	#name : #NaiveBayesClassifierTest,
+	#name : #AINaiveBayesClassifierTest,
 	#superclass : #TestCase,
 	#instVars : [
 		'exampleCase',
 		'classifier'
 	],
-	#category : #'NaiveBayesClassifier-Tests'
+	#category : #'AINaiveBayesClassifier-Tests'
 }
 
-{ #category : #initialization }
-NaiveBayesClassifierTest >> setUp [
-	super setUp.
-	exampleCase := NBCCase2 new.
-	
-	classifier := NaiveBayesClassifier new.
-	classifier vocabulary: exampleCase vocabulary.
-	classifier labels: exampleCase labels.
-]
-
 { #category : #tests }
-NaiveBayesClassifierTest >> testDocumentCountByLabelAndWordInWithLabels [
+AINaiveBayesClassifierTest >> testDocumentCountByLabelAndWordInWithLabels [
 	| expected actual |
 	expected := exampleCase documentCountsByLabelAndWord.
 	
@@ -31,7 +21,7 @@ NaiveBayesClassifierTest >> testDocumentCountByLabelAndWordInWithLabels [
 ]
 
 { #category : #tests }
-NaiveBayesClassifierTest >> testExtractVocabularyFrom [
+AINaiveBayesClassifierTest >> testExtractVocabularyFrom [
 	| expected actual |
 	
 	expected := exampleCase vocabulary.
@@ -42,7 +32,7 @@ NaiveBayesClassifierTest >> testExtractVocabularyFrom [
 ]
 
 { #category : #tests }
-NaiveBayesClassifierTest >> testFrequencyOfLabels [
+AINaiveBayesClassifierTest >> testFrequencyOfLabels [
 	| expected actual |
 	
 	expected := exampleCase labelPriors.
@@ -52,7 +42,7 @@ NaiveBayesClassifierTest >> testFrequencyOfLabels [
 ]
 
 { #category : #tests }
-NaiveBayesClassifierTest >> testLabelCount [
+AINaiveBayesClassifierTest >> testLabelCount [
 	| expected actual |
 	expected := exampleCase labelCounts.
 	actual := classifier labelCount: exampleCase arrayOfLabels.
@@ -60,7 +50,7 @@ NaiveBayesClassifierTest >> testLabelCount [
 ]
 
 { #category : #tests }
-NaiveBayesClassifierTest >> testLikelihoodByLabelAndWordInWithLabels [
+AINaiveBayesClassifierTest >> testLikelihoodByLabelAndWordInWithLabels [
 	| expected actual |
 	
 	expected := exampleCase wordLikelihoods.
@@ -73,9 +63,9 @@ NaiveBayesClassifierTest >> testLikelihoodByLabelAndWordInWithLabels [
 ]
 
 { #category : #initialization }
-NaiveBayesClassifierTest >> testPredictLabelFor [
+AINaiveBayesClassifierTest >> testPredictLabelFor [
 	| newClassifier expected actual |
-	newClassifier := NaiveBayesClassifier new.
+	newClassifier := AINaiveBayesClassifier new.
 	
 	newClassifier
 		learnFromDocuments: exampleCase arrayOfDocuments

@@ -2,7 +2,7 @@
 I am a multinomial naive bayes classifier with laplace (add 1) smoothing.
 "
 Class {
-	#name : #NaiveBayesClassifier,
+	#name : #AINaiveBayesClassifier,
 	#superclass : #Object,
 	#instVars : [
 		'vocabulary',
@@ -10,11 +10,11 @@ Class {
 		'priors',
 		'likelihoods'
 	],
-	#category : #NaiveBayesClassifier
+	#category : #AINaiveBayesClassifier
 }
 
 { #category : #learning }
-NaiveBayesClassifier >> documentCountByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels [
+AINaiveBayesClassifier >> documentCountByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels [
 	| zeroCounts selectedIndices selectedDocuments result |
 	
 	zeroCounts := (vocabulary collect: [ :each | each -> 0 ]) asDictionary.
@@ -34,32 +34,32 @@ NaiveBayesClassifier >> documentCountByLabelAndWordIn: anArrayOfDocuments withLa
 ]
 
 { #category : #learning }
-NaiveBayesClassifier >> extractVocabularyFrom: anArrayOfDocuments [
+AINaiveBayesClassifier >> extractVocabularyFrom: anArrayOfDocuments [
 	^ anArrayOfDocuments flatCollectAsSet: #value.
 ]
 
 { #category : #learning }
-NaiveBayesClassifier >> frequencyOfLabels: anArrayOfLabels [
+AINaiveBayesClassifier >> frequencyOfLabels: anArrayOfLabels [
 	^ (self labelCount: anArrayOfLabels) / anArrayOfLabels size.
 ]
 
 { #category : #learning }
-NaiveBayesClassifier >> labelCount: anArrayOfLabels [
+AINaiveBayesClassifier >> labelCount: anArrayOfLabels [
 	^ anArrayOfLabels asBag valuesAndCounts
 ]
 
 { #category : #accessing }
-NaiveBayesClassifier >> labels [
+AINaiveBayesClassifier >> labels [
 	^ labels
 ]
 
 { #category : #accessing }
-NaiveBayesClassifier >> labels: anObject [
+AINaiveBayesClassifier >> labels: anObject [
 	labels := anObject
 ]
 
 { #category : #learning }
-NaiveBayesClassifier >> learnFromDocuments: anArrayOfDocuments withLabels: anArrayOfLabels [
+AINaiveBayesClassifier >> learnFromDocuments: anArrayOfDocuments withLabels: anArrayOfLabels [
 	vocabulary := self extractVocabularyFrom: anArrayOfDocuments.
 	labels := anArrayOfLabels asSet asArray.
 	
@@ -68,17 +68,17 @@ NaiveBayesClassifier >> learnFromDocuments: anArrayOfDocuments withLabels: anArr
 ]
 
 { #category : #learning }
-NaiveBayesClassifier >> learnLabelPriors: anArrayOfLabels [
+AINaiveBayesClassifier >> learnLabelPriors: anArrayOfLabels [
 	priors := self frequencyOfLabels: anArrayOfLabels.
 ]
 
 { #category : #learning }
-NaiveBayesClassifier >> learnLikelihoodsFrom: anArrayOfDocuments withLabels: anArrayOfLabels [
+AINaiveBayesClassifier >> learnLikelihoodsFrom: anArrayOfDocuments withLabels: anArrayOfLabels [
 	likelihoods := self likelihoodByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels
 ]
 
 { #category : #learning }
-NaiveBayesClassifier >> likelihoodByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels [
+AINaiveBayesClassifier >> likelihoodByLabelAndWordIn: anArrayOfDocuments withLabels: anArrayOfLabels [
 	| documentCountsByLabelAndWord labelCounts result |
 	
 	documentCountsByLabelAndWord := self
@@ -100,35 +100,35 @@ NaiveBayesClassifier >> likelihoodByLabelAndWordIn: anArrayOfDocuments withLabel
 ]
 
 { #category : #predicting }
-NaiveBayesClassifier >> likelihoodOfDocument: aDocument givenLabel: aLabel [
+AINaiveBayesClassifier >> likelihoodOfDocument: aDocument givenLabel: aLabel [
 	"Conditional probability of aDocument (treated as a bag of words) given that this document is labeled with aLabel. This probability is based on the Naive Bayes assumption"
 	^ aDocument inject: 1 into: [ :prod :word |
 		prod * (self likelihoodOfWord: word givenLabel: aLabel) ].
 ]
 
 { #category : #predicting }
-NaiveBayesClassifier >> likelihoodOfLabel: aLabel givenDocument: aDocument [
+AINaiveBayesClassifier >> likelihoodOfLabel: aLabel givenDocument: aDocument [
 	^ (self priorOfLabel: aLabel) * (self likelihoodOfDocument: aDocument givenLabel: aLabel)
 ]
 
 { #category : #predicting }
-NaiveBayesClassifier >> likelihoodOfWord: aWord givenLabel: aLabel [
+AINaiveBayesClassifier >> likelihoodOfWord: aWord givenLabel: aLabel [
 	"Conditional probability that aWord appears in the document given that this document is labeled with aLabel"
 	^ (likelihoods at: aLabel) at: aWord
 ]
 
 { #category : #accessing }
-NaiveBayesClassifier >> likelihoods [
+AINaiveBayesClassifier >> likelihoods [
 	^ likelihoods
 ]
 
 { #category : #accessing }
-NaiveBayesClassifier >> likelihoods: anObject [
+AINaiveBayesClassifier >> likelihoods: anObject [
 	likelihoods := anObject
 ]
 
 { #category : #predicting }
-NaiveBayesClassifier >> predictLabelFor: aDocument [
+AINaiveBayesClassifier >> predictLabelFor: aDocument [
 	"Assigns label to aDocument which has the maximum likelihood given that document"
 	| document labelLikelihoods |
 	
@@ -141,32 +141,32 @@ NaiveBayesClassifier >> predictLabelFor: aDocument [
 ]
 
 { #category : #predicting }
-NaiveBayesClassifier >> priorOfLabel: aLabel [
+AINaiveBayesClassifier >> priorOfLabel: aLabel [
 	"Prior probability of a label"
 	^ priors at: aLabel
 ]
 
 { #category : #accessing }
-NaiveBayesClassifier >> priors [
+AINaiveBayesClassifier >> priors [
 	^ priors
 ]
 
 { #category : #accessing }
-NaiveBayesClassifier >> priors: anObject [
+AINaiveBayesClassifier >> priors: anObject [
 	priors := anObject
 ]
 
 { #category : #predicting }
-NaiveBayesClassifier >> removeOutOfVocabularyWords: aDocument [
+AINaiveBayesClassifier >> removeOutOfVocabularyWords: aDocument [
 	^ aDocument select: [ :word | self vocabulary includes: word ]
 ]
 
 { #category : #accessing }
-NaiveBayesClassifier >> vocabulary [
+AINaiveBayesClassifier >> vocabulary [
 	^ vocabulary
 ]
 
 { #category : #accessing }
-NaiveBayesClassifier >> vocabulary: anObject [
+AINaiveBayesClassifier >> vocabulary: anObject [
 	vocabulary := anObject
 ]
