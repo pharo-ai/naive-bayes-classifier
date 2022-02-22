@@ -9,7 +9,7 @@ This is a simple implementation of a multinomial Naive Bayes classifier in Pharo
 ## Installing
 ```Smalltalk
 Metacello new
-  baseline: 'NaiveBayesClassifier';
+  baseline: 'AINaiveBayesClassifier';
   repository: 'github://pharo-ai/NaiveBayesClassifier/src';
   load.
 ```
