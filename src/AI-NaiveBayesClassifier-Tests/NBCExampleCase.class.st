@@ -11,7 +11,7 @@ Class {
 		'wordLikelihoods',
 		'documentLikelihoods'
 	],
-	#category : #'AINaiveBayesClassifier-Tests'
+	#category : #'AI-NaiveBayesClassifier-Tests'
 }
 
 { #category : #accessing }

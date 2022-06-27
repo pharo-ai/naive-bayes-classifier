@@ -10,7 +10,7 @@ Class {
 		'priors',
 		'likelihoods'
 	],
-	#category : #AINaiveBayesClassifier
+	#category : #'AI-NaiveBayesClassifier'
 }
 
 { #category : #learning }

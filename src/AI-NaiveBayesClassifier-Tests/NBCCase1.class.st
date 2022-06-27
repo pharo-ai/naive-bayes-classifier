@@ -1,7 +1,7 @@
 Class {
 	#name : #NBCCase1,
 	#superclass : #NBCExampleCase,
-	#category : #'AINaiveBayesClassifier-Tests'
+	#category : #'AI-NaiveBayesClassifier-Tests'
 }
 
 { #category : #accessing }

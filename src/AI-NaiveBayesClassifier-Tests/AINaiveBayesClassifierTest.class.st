@@ -5,7 +5,7 @@ Class {
 		'exampleCase',
 		'classifier'
 	],
-	#category : #'AINaiveBayesClassifier-Tests'
+	#category : #'AI-NaiveBayesClassifier-Tests'
 }
 
 { #category : #running }
