@@ -14,6 +14,6 @@ BaselineOfAINaiveBayesClassifier >> baseline: spec [
 	spec for: #common do: [
 		"Packages"
 		spec
-			package: 'AINaiveBayesClassifier';
-			package: 'AINaiveBayesClassifier-Tests' with: [ spec requires: #( 'AINaiveBayesClassifier' ) ] ]
+			package: 'AI-NaiveBayesClassifier';
+			package: 'AI-NaiveBayesClassifier-Tests' with: [ spec requires: #( 'AI-NaiveBayesClassifier' ) ] ]
 ]
