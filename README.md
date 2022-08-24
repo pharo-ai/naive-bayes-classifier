@@ -13,26 +13,3 @@ Metacello new
   repository: 'github://pharo-ai/NaiveBayesClassifier/src';
   load.
 ```
-
-
-
-
-
-
-```st
-"Principal Component Analysis"
-"Initializing PolyMath Matrix"
-polyMathMatrix := PMMatrix rows: data.
-pca := PMPrincipalComponentAnalyserSVD new.
-
-"Reduce to 2 dimensions"
-pca componentsNumber: 2.
-"Fit the algorithm"
-pca fit: polyMathMatrix.
-
-"Transform the matrix"
-principalComponents := pca transform: polyMathMatrix.
-"Get the principal components"
-firstPrincipalComponent := principalComponents rows collect: [ :each | each first].
-secondPrincipalComponent := principalComponents rows collect: [ :each | each second].
-```
